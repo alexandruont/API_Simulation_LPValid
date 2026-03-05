@@ -4,8 +4,12 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from typing import List
 import psycopg
 from psycopg.rows import dict_row
+
+class PlateBatchRequest(BaseModel):
+    plates: List[str]
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if not DATABASE_URL:
@@ -47,6 +51,35 @@ def is_paid(plate: str):
             paid = cur.fetchone() is not None
 
     return {"plate": plate, "plate_norm": plate_norm, "paid": paid}
+
+@app.post("/paid/batch")
+def batch_is_paid(body: PlateBatchRequest):
+
+    normalized = [normalize_plate(p) for p in body.plates if normalize_plate(p)]
+
+    unique_plates = list(set(normalized))
+
+    if not unique_plates:
+        return {}
+
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT plate_norm
+                FROM plates
+                WHERE plate_norm = ANY(%s)
+                """,
+                (unique_plates,)
+            )
+
+            rows = cur.fetchall()
+
+    paid_set = {row["plate_norm"] for row in rows}
+
+    result = {plate: plate in paid_set for plate in unique_plates}
+
+    return result
 
 @app.post("/paid")
 def mark_paid(body: PlateUpsert):
