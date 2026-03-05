@@ -1,0 +1,8 @@
+tpark_lp
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+.envs
