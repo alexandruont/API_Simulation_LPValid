@@ -2,7 +2,7 @@
 
 ## Running the Service (Docker)
 
-## Start the system
+### Start the system
 
 Build and start the API + PostgreSQL containers:
 
@@ -12,7 +12,7 @@ docker compose up --build
 
 ---
 
-## Stop the system
+### Stop the system
 
 ```bash
 docker compose down
@@ -20,7 +20,7 @@ docker compose down
 
 ---
 
-## Reset the database (delete all data)
+### Reset the database (delete all data)
 
 ```bash
 docker compose down -v
@@ -29,7 +29,7 @@ docker compose up --build
 
 ---
 
-## View running containers
+### View running containers
 
 ```bash
 docker ps
@@ -37,7 +37,7 @@ docker ps
 
 ---
 
-## View logs
+### View logs
 
 API logs:
 
@@ -53,7 +53,7 @@ docker compose logs db
 
 ---
 
-## Access the API
+### Access the API
 
 Open in browser:
 
